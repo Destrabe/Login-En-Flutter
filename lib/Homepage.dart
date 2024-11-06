@@ -1,4 +1,3 @@
-import 'package:app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
@@ -9,57 +8,61 @@ class Homepage extends StatefulWidget {
   State<Homepage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<Homepage>{
+class _HomePageState extends State<Homepage> {
+  int _selectedIndex = 0;
+
+  // Lista de pantallas para cada pestaña
+  final List<Widget> _pages = [
+    Center(child: Text('Home Page')),
+    Center(child: Text('Notificaciones')),
+    Center(child: Text('Grupos')),
+    Center(child: Text('Perfil')),
+  ];
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
+      body: SafeArea(
+        child: _pages[_selectedIndex], // Contenido según la pestaña seleccionada
+      ),
       bottomNavigationBar: Container(
         color: Colors.black,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10), //Tamaño del contenedor de los tabs
           child: GNav(
-            //rectangulo donde estan los botones
             backgroundColor: Colors.black,
-            //color de los botones antes de ser presionados
             color: Colors.white,
-            //color de los botones despues de ser presionados
             activeColor: Colors.white,
-            //color del area del boton seleccionado
             tabBackgroundColor: Colors.grey.shade800,
-            gap:10,
-            
-            onTabChange: (index){
-              print(index);
+            gap: 8,
+            padding: const EdgeInsets.all(15), //Tamaño del relleno alrededor de los tabs
+            selectedIndex: _selectedIndex,
+            onTabChange: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
             },
-
-            padding:EdgeInsets.all(16),
             tabs: const [
               GButton(
                 icon: Icons.home,
                 text: 'Home',
-                ),
-        
+              ),
               GButton(
                 icon: Icons.notifications,
                 text: 'Notificaciones',
               ),
-          
               GButton(
                 icon: Icons.groups,
                 text: 'Grupos',
               ),
-          
-          
               GButton(
                 icon: Icons.person,
                 text: 'Perfil',
-                ),
+              ),
             ],
           ),
         ),
       ),
-      
     );
   }
-
 }
