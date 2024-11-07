@@ -52,7 +52,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
         ),
       ),
       bottomNavigationBar: Container(
-        color: Colors.black,
+        color: Colors.black,//color del recuadro de atras 
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8), // Tamaño del contenedor de los tabs
           child: GNav(

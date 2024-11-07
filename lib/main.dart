@@ -1,5 +1,7 @@
 
 import 'package:app/HomePage.dart';
+import 'package:app/login.dart';
+import 'package:app/themes/light_mode.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -7,12 +9,15 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tinder?',
+      title: 'Fuse',
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: LoginPage(),
+      theme: LightMode,
     );
   }
 }
