@@ -1,3 +1,4 @@
+import 'package:app/componentes/textField.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget{
@@ -7,17 +8,44 @@ class LoginPage extends StatelessWidget{
   Widget build (BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: Cener(
-        children: [
-          //logo
+      body: Center(
+        child: Column( 
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [  
+           //logo
+          Icon(Icons.message,
+          size: 60,
+          color: Theme.of(context).colorScheme.primary,
+          ),
 
-          Icon(Icons.message),
+          const SizedBox(height: 50),
+
           //mensaje de bienvenida
+          Text(
+            "¡Bienvenido de nuevo, te hemos extrañado!",
+            style: TextStyle(
+              color:Theme.of(context).colorScheme.primary,
+              fontSize: 16,
+              ),
+            ),
+            
+            const SizedBox(height: 25),
+
           //campo de texto de correo 
+          CustomTextField(
+            hintText: "Email",
+          ),
+
+          const SizedBox(height: 25),
+          
           //campo de texto de la contraseña
+          CustomTextField(
+            hintText: "Contraseña",
+          ),
           //boton de login
           //registrate ahora
-        ],
+          ],
+        ),
       ),
     );
   }
