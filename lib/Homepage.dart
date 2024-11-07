@@ -1,45 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:app/pages/home.dart';
+import 'package:app/pages/planes.dart';
+import 'package:app/pages/grupos.dart';
+import 'package:app/pages/perfil.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
   @override
-  State<Homepage> createState() => _HomePageState();
+  State<Homepage> createState() => _HomepageState();
 }
 
-class _HomePageState extends State<Homepage> {
+class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
+  late final TabController _tabController;
   int _selectedIndex = 0;
 
   // Lista de pantallas para cada pestaña
   final List<Widget> _pages = [
-    Center(child: Text('Home Page')),
-    Center(child: Text('Notificaciones')),
-    Center(child: Text('Grupos')),
-    Center(child: Text('Perfil')),
+    homeTab(),
+    planesTab(),
+    gruposTab(),
+    perfilTab(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: _pages.length, vsync: this);
+    _tabController.addListener(() {
+      setState(() {
+        _selectedIndex = _tabController.index;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: _pages[_selectedIndex], // Contenido según la pestaña seleccionada
+        // Contenido según la pestaña seleccionada con transición
+        child: TabBarView(
+          controller: _tabController,
+          children: _pages,
+        ),
       ),
       bottomNavigationBar: Container(
         color: Colors.black,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10), //Tamaño del contenedor de los tabs
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8), // Tamaño del contenedor de los tabs
           child: GNav(
-            backgroundColor: Colors.black,
-            color: Colors.white,
-            activeColor: Colors.white,
-            tabBackgroundColor: Colors.grey.shade800,
+            backgroundColor: Colors.black, // Rectángulo donde están los botones
+            color: Colors.white, // Color de los botones antes de ser presionados
+            activeColor: Colors.white, // Color de los botones después de ser presionados
+            tabBackgroundColor: Colors.grey.shade800, // Color del área del botón seleccionado
             gap: 8,
-            padding: const EdgeInsets.all(15), //Tamaño del relleno alrededor de los tabs
+            padding: const EdgeInsets.all(10), // Tamaño del relleno alrededor de los tabs
             selectedIndex: _selectedIndex,
             onTabChange: (index) {
               setState(() {
                 _selectedIndex = index;
+                _tabController.index = index; // Actualizar el TabController
               });
             },
             tabs: const [
@@ -48,8 +75,8 @@ class _HomePageState extends State<Homepage> {
                 text: 'Home',
               ),
               GButton(
-                icon: Icons.notifications,
-                text: 'Notificaciones',
+                icon: Icons.padding,
+                text: 'Planes',
               ),
               GButton(
                 icon: Icons.groups,
