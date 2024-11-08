@@ -1,6 +1,5 @@
-
 import 'package:app/HomePage.dart';
-import 'package:app/login.dart';
+import 'package:app/auth/login_o_register.dart';
 import 'package:app/themes/light_mode.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Fuse',
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: LoginORegister(),
       theme: LightMode,
     );
   }
