@@ -1,24 +1,30 @@
 import 'package:app/componentes/button.dart';
 import 'package:app/componentes/textField.dart';
+import 'package:app/login.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatelessWidget {
-  Register ({super.key, required this.onTap});
-  
+  Register({super.key, required this.onTap});
+
   // Controladores para correo y contraseña
+  final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _correoController = TextEditingController();
   final TextEditingController _contraseniaController = TextEditingController();
-  final TextEditingController _confirmacionController = TextEditingController();
 
   //ir a la pagina de login
   final void Function()? onTap;
 
   // Método de registro
-  void register() {}
+  void register(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage(onTap: () {})),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
+    return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Center(
         child: Column(
@@ -44,10 +50,19 @@ class Register extends StatelessWidget {
 
             const SizedBox(height: 25),
 
-            // Campo de texto de correo
+            // Campo de texto del nombre
+            CustomTextField(
+              hintText: "Nombre",
+              obscureText: false,
+              controller: _nombreController,
+            ),
+
+            const SizedBox(height: 10),
+
+            // Campo de texto del email
             CustomTextField(
               hintText: "Email",
-              obscureText: false,
+              obscureText: true,
               controller: _correoController,
             ),
 
@@ -60,21 +75,12 @@ class Register extends StatelessWidget {
               controller: _contraseniaController,
             ),
 
-            const SizedBox(height: 10),
-
-            // Campo de texto de la contraseña
-            CustomTextField(
-              hintText: "Confirma tu Contaseña",
-              obscureText: true,
-              controller: _confirmacionController,
-            ),
-
             const SizedBox(height: 25),
 
-            // Botón de login
+            // Botón de registro
             MyButton(
               text: "Register",
-              onTap: register,
+              onTap: () => register(context),
             ),
 
             const SizedBox(height: 25),
@@ -89,14 +95,25 @@ class Register extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: onTap,
-                  child: Text(
-                    "Inicia sesion ahora",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+                  child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.black, // Color del borde
+                            width: 1.5, // Grosor del "subrayado"
+                            style: BorderStyle.solid, // Puedes cambiarlo a dotted si deseas un efecto punteado
+                            ),
+                          ),
+                      ),
+                      child: Text(
+                        "Inicia sesión ahora",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black, // Color del texto
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                )
               ],
             ),
           ],
@@ -105,3 +122,4 @@ class Register extends StatelessWidget {
     );
   }
 }
+

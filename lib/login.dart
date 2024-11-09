@@ -1,11 +1,13 @@
 import 'package:app/componentes/button.dart';
 import 'package:app/componentes/textField.dart';
+import 'package:app/homepage.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.onTap});
+  LoginPage({super.key, required this.onTap});
 
-  final void Function()? onTap;
+  //ir a la pagina de registro
+ final void Function()? onTap;
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -17,8 +19,12 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _contraseniaController = TextEditingController();
 
   // Método de login
-  void login() {
-    // Aquí puedes añadir la lógica para autenticar al usuario.
+  void login(BuildContext context) {
+    Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => Homepage()),
+  );
+
     print("Correo: ${_correoController.text}");
     print("Contraseña: ${_contraseniaController.text}");
   }
@@ -30,6 +36,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: SingleChildScrollView(
           child: Column(
+            
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Logo
@@ -73,8 +80,8 @@ class _LoginPageState extends State<LoginPage> {
               // Botón de login
               MyButton(
                 text: "Login",
-                onTap: login,
-              ),
+                onTap: () => login(context),
+                ),
 
               const SizedBox(height: 25),
 
@@ -88,21 +95,32 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   GestureDetector(
                     onTap: widget.onTap,
-                    child: Text(
-                      "Regístrate ahora",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.black, // Color del borde
+                            width: 1.5, // Grosor del "subrayado"
+                            style: BorderStyle.solid, // Puedes cambiarlo a dotted si deseas un efecto punteado
+                            ),
+                          ),
+                      ),
+                      child: Text(
+                        "Regístrate ahora",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black, // Color del texto
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-            ],
+             ],
+           ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   @override
