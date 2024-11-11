@@ -1,13 +1,14 @@
 import 'package:app/componentes/button.dart';
 import 'package:app/componentes/textField.dart';
 import 'package:app/homepage.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({super.key, required this.onTap});
 
   //ir a la pagina de registro
- final void Function()? onTap;
+  final void Function()? onTap;
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -49,13 +50,19 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 50),
 
               // Mensaje de bienvenida
-              Text(
+              Center(
+                child: AutoSizeText(
                 "¡Bienvenido de nuevo, te hemos extrañado!",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   fontSize: 16,
                 ),
+                maxLines: 1, // Limita el texto a una sola línea
+                minFontSize: 12, // Define un tamaño mínimo para que no se reduzca demasiado
+                overflow: TextOverflow.ellipsis,
               ),
+            ),
 
               const SizedBox(height: 25),
 
@@ -116,11 +123,11 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
-             ],
-           ),
+            ],
           ),
         ),
-      );
+      ),
+    );
   }
 
   @override

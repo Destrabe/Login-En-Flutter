@@ -23,7 +23,7 @@ class MyButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
         ),
         padding: const EdgeInsets.all(25),
-        margin: const EdgeInsets.symmetric(horizontal: 50),
+        margin: const EdgeInsets.symmetric(horizontal: 50),//Margen del boton
         child: Center(
           child: Text(text),
         ),

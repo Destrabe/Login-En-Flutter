@@ -8,18 +8,18 @@ class LoginORegister extends StatefulWidget {
   @override
   State<LoginORegister> createState() => _LoginOrRegisterState();
 }
- class _LoginOrRegisterState extends  State<LoginORegister> {
+class _LoginOrRegisterState extends  State<LoginORegister> {
    // Inicialmente, mostrar la página de inicio de sesión
-   bool showLoginPage = true;
+  bool showLoginPage = true;
    // alternar entre la página de inicio de sesión y la de registro
-   void togglePages(){
+  void togglePages(){
     setState(() {
       showLoginPage = !showLoginPage;
-    });
-   }
+      });
+  }
 
-   @override
-   Widget build(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     if (showLoginPage){
       return LoginPage(
         onTap: togglePages,
@@ -29,8 +29,5 @@ class LoginORegister extends StatefulWidget {
         onTap: togglePages,
       ); 
     }
-   }
- }
-
-
-
+  }
+}

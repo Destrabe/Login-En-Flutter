@@ -1,6 +1,7 @@
 import 'package:app/componentes/button.dart';
 import 'package:app/componentes/textField.dart';
 import 'package:app/login.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatelessWidget {
@@ -40,12 +41,18 @@ class Register extends StatelessWidget {
             const SizedBox(height: 50),
 
             // Mensaje de bienvenida
-            Text(
+            Center(
+            child: AutoSizeText(
               "Vamos a crear una cuenta para usted",
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontSize: 16,
               ),
+              maxLines: 1, // Limita el texto a una sola línea
+                minFontSize: 12, // Define un tamaño mínimo para que no se reduzca demasiado
+                overflow: TextOverflow.ellipsis,
+            ),
             ),
 
             const SizedBox(height: 25),
@@ -101,7 +108,7 @@ class Register extends StatelessWidget {
                           bottom: BorderSide(
                             color: Colors.black, // Color del borde
                             width: 1.5, // Grosor del "subrayado"
-                            style: BorderStyle.solid, // Puedes cambiarlo a dotted si deseas un efecto punteado
+                            style: BorderStyle.solid,
                             ),
                           ),
                       ),
