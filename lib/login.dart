@@ -18,6 +18,20 @@ class _LoginPageState extends State<LoginPage> {
   // Controladores para correo y contraseña
   final TextEditingController _correoController = TextEditingController();
   final TextEditingController _contraseniaController = TextEditingController();
+  
+  // Variables para los campos de texto
+  late final CustomTextField correoLogin = CustomTextField(
+    hintText: "Email",
+    obscureText: false,
+    controller: _correoController,
+  );
+
+  late final CustomTextField contraseniaLogin = CustomTextField(
+  hintText: "Contraseña",
+  obscureText: false,
+  controller: _contraseniaController,
+  );
+
 
   // Método de login
   void login(BuildContext context) {
@@ -66,22 +80,10 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 25),
 
-              // Campo de texto de correo
-              CustomTextField(
-                hintText: "Email",
-                obscureText: false,
-                controller: _correoController,
-              ),
-
+              // Campos de texto
+              correoLogin,
               const SizedBox(height: 10),
-
-              // Campo de texto de la contraseña
-              CustomTextField(
-                hintText: "Contraseña",
-                obscureText: true,
-                controller: _contraseniaController,
-              ),
-
+              contraseniaLogin,
               const SizedBox(height: 25),
 
               // Botón de login
