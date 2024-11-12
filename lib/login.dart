@@ -1,6 +1,8 @@
 import 'package:app/componentes/button.dart';
 import 'package:app/componentes/textField.dart';
 import 'package:app/homepage.dart';
+import 'package:app/register.dart';
+import 'package:app/services/api_loginin.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
@@ -16,33 +18,81 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   // Controladores para correo y contraseña
-  final TextEditingController _correoController = TextEditingController();
+  final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _contraseniaController = TextEditingController();
   
   // Variables para los campos de texto
-  late final CustomTextField correoLogin = CustomTextField(
-    hintText: "Email",
-    obscureText: false,
-    controller: _correoController,
-  );
+  late final CustomTextField nombreLogin;
+  late final CustomTextField contraseniaLogin;
 
-  late final CustomTextField contraseniaLogin = CustomTextField(
-  hintText: "Contraseña",
-  obscureText: false,
-  controller: _contraseniaController,
-  );
-
+  // Variables para los campos de texto
+  @override
+  void initState() {
+    super.initState();
+    // Inicialización de los campos de texto
+    nombreLogin = CustomTextField(
+      hintText: "Nombre",
+      obscureText: false,
+      controller: _nombreController,
+    );
+    contraseniaLogin = CustomTextField(
+      hintText: "Contraseña",
+      obscureText: true,
+      controller: _contraseniaController,
+    );
+  }
 
   // Método de login
-  void login(BuildContext context) {
-    Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => Homepage()),
-  );
+  void login(BuildContext context) async {
+    String nombre = _nombreController.text;
+    String contrasenia = _contraseniaController.text;
 
-    print("Correo: ${_correoController.text}");
-    print("Contraseña: ${_contraseniaController.text}");
+    try {
+      bool success = await Api_loginin().loginUser(nombre, contrasenia);
+      print("Login success: $success");  
+
+      if (success) {
+        // Si la autenticación es exitosa, navega a la página principal
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Homepage(onTap: () {}),
+   ),
+        );
+      } else {
+        // Si falla la autenticación, muestra un mensaje de error
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Error"),
+            content: Text("Nombre o contraseña incorrectos. Intenta nuevamente."),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("OK"),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      // Manejo de errores de conexión
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Error"),
+          content: Text("Hubo un problema al conectar con la API. Intenta más tarde."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +107,8 @@ class _LoginPageState extends State<LoginPage> {
               // Logo
               Icon(
                 Icons.message,
-                size: 60,
-                color: Theme.of(context).colorScheme.primary,
+                size: 60,//tamaño
+                color: Theme.of(context).colorScheme.primary,//color
               ),
 
               const SizedBox(height: 50),
@@ -81,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 25),
 
               // Campos de texto
-              correoLogin,
+              nombreLogin,
               const SizedBox(height: 10),
               contraseniaLogin,
               const SizedBox(height: 25),
@@ -130,12 +180,5 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _correoController.dispose();
-    _contraseniaController.dispose();
-    super.dispose();
   }
 }

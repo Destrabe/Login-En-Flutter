@@ -6,7 +6,9 @@ import 'package:app/pages/grupos.dart';
 import 'package:app/pages/perfil.dart';
 
 class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+  const Homepage({super.key, required this.onTap});
+  final VoidCallback onTap;
+
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -93,3 +95,4 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
     );
   }
 }
+

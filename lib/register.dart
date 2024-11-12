@@ -1,6 +1,7 @@
 import 'package:app/componentes/button.dart';
 import 'package:app/componentes/textField.dart';
 import 'package:app/login.dart';
+import 'package:app/services/api_registro.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
@@ -46,19 +47,66 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  // Método de registro
-  void register(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage(onTap: () {})),
+  //metodo API
+  void register(BuildContext context) async {
+  
+  // Obtén los datos del formulario
+  String nombre = _nombreController.text;
+  String contrasenia = _contraseniaController.text;
+  String correo = _correoController.text;
+
+  try {
+    // Llama al servicio de la API con los datos del formulario
+    bool success = await Api_registro().registerUser(nombre, contrasenia, correo);
+
+    if (success) {
+      // Si el registro fue exitoso, navega a la página de login
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage(onTap: () {})),
+      );
+    } else {
+      // Si el registro falla, muestra un mensaje de error
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Error"),
+          content: Text("No se pudo registrar el usuario. Intenta nuevamente."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
+  } catch (e) {
+    // Si hay un error al conectar con la API, muestra un mensaje
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Error"),
+        content: Text("Hubo un problema al conectar con la API. Intenta más tarde."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("OK"),
+          ),
+        ],
+      ),
     );
   }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Center(
+       child:SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -134,6 +182,7 @@ class _RegisterState extends State<Register> {
             ),
           ],
         ),
+       ),
       ),
     );
   }

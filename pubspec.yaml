@@ -37,6 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   google_nav_bar: ^5.0.7
   auto_size_text: ^3.0.0
+  http: ^1.2.2
+
 
 
 
