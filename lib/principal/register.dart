@@ -1,6 +1,6 @@
 import 'package:app/componentes/button.dart';
 import 'package:app/componentes/textField.dart';
-import 'package:app/login.dart';
+import 'package:app/principal/login.dart';
 import 'package:app/services/api_registro.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';

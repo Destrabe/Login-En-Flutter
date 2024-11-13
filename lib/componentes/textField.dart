@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatefulWidget {
-  final String hintText; 
+  final String hintText;
   final bool obscureText;
-  final TextEditingController controller; 
+  final TextEditingController controller;
 
   // Constructor
   const CustomTextField({
@@ -18,8 +18,8 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  //indica si hay texto en el campo
   bool hasText = false;
+  bool showPassword = false; // Controla la visibilidad de la contraseña
 
   @override
   void initState() {
@@ -31,44 +31,50 @@ class _CustomTextFieldState extends State<CustomTextField> {
     });
   }
 
-  void updateText(String newText) {
-    widget.controller.text = newText;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
-      //Margen
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: TextField(
-        obscureText: widget.obscureText,
+        obscureText: widget.obscureText && !showPassword,
         controller: widget.controller,
-        style: TextStyle(color: Colors .black), // Color del texto
+        style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
-          labelText: widget.hintText, 
-          labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary), // Color de la etiqueta
+          labelText: widget.hintText,
+          labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary),// Borde del campo cuando no está enfocado
+            borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),// Borde del campo cuando está enfocado
+            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
           ),
-          fillColor: Theme.of(context).colorScheme.secondary, // Color de fondo del textField
-          filled: true, 
+          fillColor: Theme.of(context).colorScheme.secondary,
+          filled: true,
           suffixIcon: hasText
-              ? IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.black), // color del icono
-                  onPressed: () {
-                    widget.controller.clear(); 
-                    setState(() {
-                      hasText = false; 
-                    });
-                  },
-                )
-              : null, 
+              ? (widget.obscureText
+                  ? IconButton(
+                      icon: Icon(
+                        showPassword ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          showPassword = !showPassword;
+                        });
+                      },
+                    )
+                  : IconButton(
+                      icon: const Icon(Icons.clear, color: Colors.black),
+                      onPressed: () {
+                        widget.controller.clear();
+                        setState(() {
+                          hasText = false;
+                        });
+                      },
+                    ))
+              : null,
         ),
       ),
     );
   }
 }
-
