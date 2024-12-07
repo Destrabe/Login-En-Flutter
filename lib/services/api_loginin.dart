@@ -2,19 +2,20 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Api_loginin {
-  final String baseUrl = "https://portfolio-c4l9.onrender.com"; 
+  final String baseUrl = "https://portfolio-c4l9.onrender.com";
 
   // Método para registrar un usuario (POST request)
-  Future<bool> loginUser(String nombreLogin,String contraseniaLogin) async {
+  Future<bool> loginUser(String nombreLogin, String contraseniaLogin) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/loginin'),
         headers: {
-          'Content-Type': 'application/json', // Indicamos que los datos se enviarán en formato JSON
+          'Content-Type':
+              'application/json', // Indicamos que los datos se enviarán en formato JSON
         },
         body: json.encode({
-          'nombre': nombreLogin, 
-          'contrasenia': contraseniaLogin, 
+          'nombre': nombreLogin,
+          'contrasenia': contraseniaLogin,
         }),
       );
 
@@ -23,16 +24,22 @@ class Api_loginin {
       print('Response body: ${response.body}');
 
       // Verificar que la respuesta de la API es exitosa
-      if (response.statusCode == 200 ) {
-        return true; // Registro exitosov
+      if (response.statusCode == 200) {
+        return true;
+      } else if (response.statusCode == 400) {
+        // Verificar si el error es relacionado con el nombre o la contraseña
+        if (response.body.contains('Nombre incorrecto')) {
+          throw Exception('Nombre incorrecto');
+        } else if (response.body.contains('Contraseña incorrecta')) {
+          throw Exception('Contraseña incorrecta');
+        } else {
+          throw Exception('Error desconocido: ${response.body}');
+        }
       } else {
-        // Si la API devuelve un error, lanza una excepción
         throw Exception('Error al registrar al usuario: ${response.body}');
       }
     } catch (e) {
-      // Si hay un error de conexión o cualquier otra excepción
       throw Exception('Error al conectar con la API: $e');
     }
   }
-
-}    
+}
