@@ -1,97 +1,122 @@
+import 'package:flutter/material.dart';
 import 'package:app/componentes/button.dart';
 import 'package:app/componentes/textField.dart';
-import 'package:app/homepage.dart';
+import 'package:app/principal/Homepage.dart';
 import 'package:app/services/api_loginin.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key, required this.onTap});
-
-  //ir a la pagina de registro
-  final void Function()? onTap;
+  final Function() onTap;
+  const LoginPage({Key? key, required this.onTap}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // Controladores para correo y contraseña
   final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _contraseniaController = TextEditingController();
-  
-  // Variables para los campos de texto
-  late final CustomTextField nombreLogin;
-  late final CustomTextField contraseniaLogin;
 
-  // Variables para los campos de texto
+  String nombreErrorMessage = '';
+  String contraseniaErrorMessage = '';
+  bool isLoading = false;
+  bool obscureText = true;
+
+  final Api_loginin _apiLoginin = Api_loginin();
+
   @override
   void initState() {
     super.initState();
-    // Inicialización de los campos de texto
-    nombreLogin = CustomTextField(
-      hintText: "Nombre",
-      obscureText: false,
-      controller: _nombreController,
-    );
-    contraseniaLogin = CustomTextField(
-      hintText: "Contraseña",
-      obscureText: true,
-      controller: _contraseniaController,
-    );
+
+    // Listeners para actualizar dinámicamente los campos de texto
+    _nombreController.addListener(() {
+      setState(() {});
+    });
+    _contraseniaController.addListener(() {
+      setState(() {});
+    });
   }
 
-  // Método de login
-  void login(BuildContext context) async {
-    String nombre = _nombreController.text;
-    String contrasenia = _contraseniaController.text;
+  @override
+  void dispose() {
+    _nombreController.dispose();
+    _contraseniaController.dispose();
+    super.dispose();
+  }
+
+  void _hideErrorMessages() {
+    Future.delayed(const Duration(seconds: 5), () {
+      if (mounted) {
+        setState(() {
+          nombreErrorMessage = '';
+          contraseniaErrorMessage = '';
+        });
+      }
+    });
+  }
+
+  void _login() async {
+    setState(() {
+      nombreErrorMessage = '';
+      contraseniaErrorMessage = '';
+    });
+
+    // Validar campos vacíos
+    if (_nombreController.text.isEmpty) {
+      setState(() {
+        nombreErrorMessage = "Por favor ingresa un nombre";
+      });
+    }
+
+    if (_contraseniaController.text.isEmpty) {
+      setState(() {
+        contraseniaErrorMessage = "Por favor ingresa una contraseña";
+      });
+    }
+
+    if (_nombreController.text.isEmpty || _contraseniaController.text.isEmpty) {
+      _hideErrorMessages(); // Ocultar mensajes tras un tiempo
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
 
     try {
-      bool success = await Api_loginin().loginUser(nombre, contrasenia);
-      print("Login success: $success");  
+      bool isLoggedIn = await _apiLoginin.loginUser(
+        _nombreController.text,
+        _contraseniaController.text,
+      );
 
-      if (success) {
-        // Si la autenticación es exitosa, navega a la página principal
+      if (isLoggedIn) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Homepage(onTap: () {}),
-   ),
-        );
-      } else {
-        // Si falla la autenticación, muestra un mensaje de error
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text("Error"),
-            content: Text("Nombre o contraseña incorrectos. Intenta nuevamente."),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text("OK"),
-              ),
-            ],
+          MaterialPageRoute(
+            builder: (context) => Homepage(onTap: widget.onTap),
           ),
         );
       }
     } catch (e) {
-      // Manejo de errores de conexión
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Error"),
-          content: Text("Hubo un problema al conectar con la API. Intenta más tarde."),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("OK"),
-            ),
-          ],
-        ),
-      );
+      String error = e.toString();
+      print("Error capturado: $error");
+
+      setState(() {
+        if (error.contains('Nombre de usuario incorrecto')) {
+          nombreErrorMessage = "Nombre no registrado";
+        } else if (error.contains('Contraseña incorrecta')) {
+          contraseniaErrorMessage = "Contraseña incorrecta";
+        } else {
+          nombreErrorMessage = "Error desconocido. Por favor intente de nuevo.";
+        }
+      });
+    } finally {
+      _hideErrorMessages(); // Ocultar mensajes tras un tiempo
+      setState(() {
+        isLoading = false;
+      });
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -100,46 +125,106 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: SingleChildScrollView(
           child: Column(
-            
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Logo
               Icon(
                 Icons.message,
-                size: 60,//tamaño
-                color: Theme.of(context).colorScheme.primary,//color
+                size: 60,
+                color: Theme.of(context).colorScheme.primary,
               ),
 
               const SizedBox(height: 50),
 
               // Mensaje de bienvenida
-              Center(
-                child: AutoSizeText(
+              AutoSizeText(
                 "¡Bienvenido de nuevo, te hemos extrañado!",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   fontSize: 16,
                 ),
-                maxLines: 1, // Limita el texto a una sola línea
-                minFontSize: 12, // Define un tamaño mínimo para que no se reduzca demasiado
+                maxLines: 1,
+                minFontSize: 12,
                 overflow: TextOverflow.ellipsis,
               ),
-            ),
 
               const SizedBox(height: 25),
 
-              // Campos de texto
-              nombreLogin,
+              // Campo de texto para nombre
+              CustomTextField(
+                hintText: "Nombre",
+                obscureText: false,
+                controller: _nombreController,
+                prefixIcon: Icon(Icons.email_outlined),
+                suffixIcon: _nombreController.text.isNotEmpty
+                    ? GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _nombreController.clear();
+                          });
+                        },
+                        child: Icon(Icons.clear, color: Colors.grey),
+                      )
+                    : null,
+                isError: nombreErrorMessage.isNotEmpty,
+              ),
+
+              if (nombreErrorMessage.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(left: 25.0, top: 8.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      nombreErrorMessage,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ),
+
               const SizedBox(height: 10),
-              contraseniaLogin,
+
+              // Campo de texto para contraseña
+              CustomTextField(
+                hintText: "Contraseña",
+                obscureText: obscureText,
+                controller: _contraseniaController,
+                prefixIcon: const Icon(Icons.lock_outline),
+                suffixIcon: _contraseniaController.text.isNotEmpty
+                    ? GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            obscureText = !obscureText;
+                          });
+                        },
+                        child: Icon(
+                          obscureText ? Icons.visibility_off : Icons.visibility,
+                          color: Colors.grey,
+                        ),
+                      )
+                    : null,
+                isError: contraseniaErrorMessage.isNotEmpty,
+              ),
+
+              if (contraseniaErrorMessage.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(left: 25.0, top: 8.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      contraseniaErrorMessage,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ),
+
               const SizedBox(height: 25),
 
               // Botón de login
               MyButton(
-                text: "Login",
-                onTap: () => login(context),
-                ),
+                text: isLoading ? "Cargando..." : "Iniciar sesión",
+                onTap: isLoading ? null : _login,
+              ),
 
               const SizedBox(height: 25),
 
@@ -149,29 +234,30 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Text(
                     "¿No eres miembro? ",
-                    style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                   GestureDetector(
                     onTap: widget.onTap,
                     child: Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: Colors.black, // Color del borde
-                            width: 1.5, // Grosor del "subrayado"
-                            style: BorderStyle.solid, // Puedes cambiarlo a dotted si deseas un efecto punteado
-                            ),
+                            color: Colors.black,
+                            width: 1.5,
                           ),
+                        ),
                       ),
-                      child: Text(
+                      child: const Text(
                         "Regístrate ahora",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.black, // Color del texto
+                          color: Colors.black,
                         ),
                       ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ],
