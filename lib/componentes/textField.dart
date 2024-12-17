@@ -4,19 +4,22 @@ class CustomTextField extends StatefulWidget {
   final String hintText;
   final bool obscureText;
   final TextEditingController controller;
-  final Widget? prefixIcon;
-  final Widget? suffixIcon;
   final bool isError;
+  final Icon? prefixIcon;
+  final Widget? suffixIcon;
+  final BorderSide borderSide; // Borde cuando no está seleccionado
+  final BorderSide focusedBorderSide; // Borde cuando está seleccionado
 
-  // Constructor
   const CustomTextField({
     super.key,
     required this.hintText,
     required this.obscureText,
     required this.controller,
-    this.prefixIcon, // Icono de prefijo opcional
-    this.suffixIcon, // Icono de sufijo opcional
-    this.isError = false, // Indica si hay un error
+    required this.isError,
+    this.prefixIcon,
+    this.suffixIcon,
+    required this.borderSide,
+    required this.focusedBorderSide,
   });
 
   @override
@@ -24,28 +27,34 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
+  bool hasText = false;
   bool showPassword = false;
+
+  // Método que escucha los cambios en el controlador
+  void _onTextChanged() {
+    if (mounted) {
+      setState(() {
+        hasText = widget.controller.text.isNotEmpty;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(_textChanged);
-  }
-
-  void _textChanged() {
-    setState(() {});
+    // Añadimos el listener
+    widget.controller.addListener(_onTextChanged);
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(_textChanged);
+    // Eliminamos el listener al desmontar el widget
+    widget.controller.removeListener(_onTextChanged);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    bool hasText = widget.controller.text.isNotEmpty;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: TextField(
@@ -53,33 +62,49 @@ class _CustomTextFieldState extends State<CustomTextField> {
         controller: widget.controller,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
-          prefixIcon: widget.prefixIcon,
-          suffixIcon: widget.suffixIcon ??
-              (hasText
-                  ? GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          widget.controller.clear();
-                        });
-                      },
-                      child: Icon(Icons.clear, color: Colors.grey),
-                    )
-                  : null),
           labelText: widget.hintText,
           labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+          // Borde sin enfoque
           enabledBorder: OutlineInputBorder(
-            borderSide:
-                BorderSide(color: Theme.of(context).colorScheme.tertiary),
+            borderSide: widget.isError
+                ? const BorderSide(color: Colors.red, width: 1.5)
+                : widget.borderSide,
           ),
+          // Borde con enfoque
           focusedBorder: OutlineInputBorder(
-            borderSide:
-                BorderSide(color: Theme.of(context).colorScheme.primary),
+            borderSide: widget.isError
+                ? const BorderSide(color: Colors.red, width: 2.0)
+                : widget.focusedBorderSide,
           ),
           fillColor: Theme.of(context).colorScheme.secondary,
           filled: true,
-          errorText: widget.isError
-              ? 'Este campo es obligatorio'
-              : null, // Error message
+          prefixIcon: widget.prefixIcon,
+          suffixIcon: widget.suffixIcon ??
+              (hasText
+                  ? (widget.obscureText
+                      ? IconButton(
+                          icon: Icon(
+                            showPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.black,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              showPassword = !showPassword;
+                            });
+                          },
+                        )
+                      : IconButton(
+                          icon: const Icon(Icons.clear, color: Colors.black),
+                          onPressed: () {
+                            widget.controller.clear();
+                            setState(() {
+                              hasText = false;
+                            });
+                          },
+                        ))
+                  : null),
         ),
       ),
     );

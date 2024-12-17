@@ -168,8 +168,17 @@ class _LoginPageState extends State<LoginPage> {
                       )
                     : null,
                 isError: nombreErrorMessage.isNotEmpty,
+                borderSide: BorderSide(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primary, // Tema cuando no está enfocado
+                  width: 1.5,
+                ),
+                focusedBorderSide: const BorderSide(
+                  color: Colors.black, // Borde negro cuando está enfocado
+                  width: 2.0,
+                ),
               ),
-
               if (nombreErrorMessage.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(left: 25.0, top: 8.0),
@@ -204,8 +213,17 @@ class _LoginPageState extends State<LoginPage> {
                       )
                     : null,
                 isError: contraseniaErrorMessage.isNotEmpty,
+                borderSide: BorderSide(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primary, // Tema cuando no está enfocado
+                  width: 1.5,
+                ),
+                focusedBorderSide: const BorderSide(
+                  color: Colors.black, // Borde negro cuando está enfocado
+                  width: 2.0,
+                ),
               ),
-
               if (contraseniaErrorMessage.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(left: 25.0, top: 8.0),

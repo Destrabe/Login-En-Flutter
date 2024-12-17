@@ -196,6 +196,16 @@ class _RegistroPageState extends State<Registro> {
                         )
                       : null,
                   isError: nombreErrorMessage.isNotEmpty,
+                  borderSide: BorderSide(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary, // Tema cuando no está enfocado
+                    width: 1.5,
+                  ),
+                  focusedBorderSide: const BorderSide(
+                    color: Colors.black, // Borde negro cuando está enfocado
+                    width: 2.0,
+                  ),
                 ),
                 if (nombreErrorMessage.isNotEmpty)
                   Padding(
@@ -228,6 +238,16 @@ class _RegistroPageState extends State<Registro> {
                         )
                       : null,
                   isError: correoErrorMessage.isNotEmpty,
+                  borderSide: BorderSide(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary, // Tema cuando no está enfocado
+                    width: 1.5,
+                  ),
+                  focusedBorderSide: const BorderSide(
+                    color: Colors.black, // Borde negro cuando está enfocado
+                    width: 2.0,
+                  ),
                 ),
                 if (correoErrorMessage.isNotEmpty)
                   Padding(
@@ -265,6 +285,16 @@ class _RegistroPageState extends State<Registro> {
                         )
                       : null,
                   isError: contraseniaErrorMessage.isNotEmpty,
+                  borderSide: BorderSide(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary, // Tema cuando no está enfocado
+                    width: 1.5,
+                  ),
+                  focusedBorderSide: const BorderSide(
+                    color: Colors.black, // Borde negro cuando está enfocado
+                    width: 2.0,
+                  ),
                 ),
                 if (contraseniaErrorMessage.isNotEmpty)
                   Padding(
