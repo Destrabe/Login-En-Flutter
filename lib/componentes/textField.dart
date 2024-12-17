@@ -4,6 +4,9 @@ class CustomTextField extends StatefulWidget {
   final String hintText;
   final bool obscureText;
   final TextEditingController controller;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final bool isError;
 
   // Constructor
   const CustomTextField({
@@ -11,6 +14,9 @@ class CustomTextField extends StatefulWidget {
     required this.hintText,
     required this.obscureText,
     required this.controller,
+    this.prefixIcon, // Icono de prefijo opcional
+    this.suffixIcon, // Icono de sufijo opcional
+    this.isError = false, // Indica si hay un error
   });
 
   @override
@@ -18,21 +24,28 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  bool hasText = false;
-  bool showPassword = false; // Controla la visibilidad de la contraseña
+  bool showPassword = false;
 
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(() {
-      setState(() {
-        hasText = widget.controller.text.isNotEmpty;
-      });
-    });
+    widget.controller.addListener(_textChanged);
+  }
+
+  void _textChanged() {
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_textChanged);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool hasText = widget.controller.text.isNotEmpty;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: TextField(
@@ -40,39 +53,33 @@ class _CustomTextFieldState extends State<CustomTextField> {
         controller: widget.controller,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
+          prefixIcon: widget.prefixIcon,
+          suffixIcon: widget.suffixIcon ??
+              (hasText
+                  ? GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          widget.controller.clear();
+                        });
+                      },
+                      child: Icon(Icons.clear, color: Colors.grey),
+                    )
+                  : null),
           labelText: widget.hintText,
           labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary),
+            borderSide:
+                BorderSide(color: Theme.of(context).colorScheme.tertiary),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+            borderSide:
+                BorderSide(color: Theme.of(context).colorScheme.primary),
           ),
           fillColor: Theme.of(context).colorScheme.secondary,
           filled: true,
-          suffixIcon: hasText
-              ? (widget.obscureText
-                  ? IconButton(
-                      icon: Icon(
-                        showPassword ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.black,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          showPassword = !showPassword;
-                        });
-                      },
-                    )
-                  : IconButton(
-                      icon: const Icon(Icons.clear, color: Colors.black),
-                      onPressed: () {
-                        widget.controller.clear();
-                        setState(() {
-                          hasText = false;
-                        });
-                      },
-                    ))
-              : null,
+          errorText: widget.isError
+              ? 'Este campo es obligatorio'
+              : null, // Error message
         ),
       ),
     );
