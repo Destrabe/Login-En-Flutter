@@ -2,39 +2,38 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Api_registro {
-  final String baseUrl = "https://portfolio-c4l9.onrender.com";  // Reemplaza con la URL de tu API
+  final String baseUrl = "https://portfolio-c4l9.onrender.com";
 
-  // Método para registrar un usuario (POST request)
-  Future<bool> registerUser(String nombreRegister, String contraseniaRegister, String correoRegister) async {
+  Future<bool> registerUser(String nombreRegistro, String correoRegistro,
+      String contraseniaRegistro) async {
     try {
-      // Realiza la solicitud POST a la API
       final response = await http.post(
-        Uri.parse('$baseUrl/registro'), // URL completa para el registro
+        Uri.parse('$baseUrl/appregistro'),
         headers: {
-          'Content-Type': 'application/json', // Indicamos que los datos se enviarán en formato JSON
+          'Content-Type': 'application/json',
         },
         body: json.encode({
-          'nombre': nombreRegister,
-          'contrasenia': contraseniaRegister,
-          'correo': correoRegister, 
+          'nombre': nombreRegistro,
+          'correo': correoRegistro,
+          'contrasenia': contraseniaRegistro,
         }),
       );
 
-      // Depurar la respuesta de la API
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
+      print("Correo enviado: $correoRegistro");
 
-      // Verificar que la respuesta de la API es exitosa
       if (response.statusCode == 200) {
-        return true; // Registro exitoso
+        return true;
       } else {
-        // Si la API devuelve un error, lanza una excepción
-        throw Exception('Error al registrar al usuario: ${response.body}');
+        var errorResponse = json.decode(response.body);
+        String errorMessage = errorResponse is List
+            ? (errorResponse as List).join(",")
+            : 'Error desconocido';
+        throw Exception('Error al registrar al usuario: $errorMessage');
       }
     } catch (e) {
-      // Si hay un error de conexión o cualquier otra excepción
       throw Exception('Error al conectar con la API: $e');
     }
   }
 }
-
